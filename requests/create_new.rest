@@ -2,6 +2,7 @@ POST http://localhost:3001/api/persons
 Content-Type: application/json
 
 {
-    "content": "Blaah",
+    "name": "make",
+    "number": "41341",
     "important": true
 }
