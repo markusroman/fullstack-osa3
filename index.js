@@ -33,7 +33,8 @@ app.use(errorHandler)
 
 app.get("/api/persons", (req, res) => {
   Person.find({}).then(response => {
-    return res.json(response.map(p => p.toJSON()));
+    res.json(response.map(p => p.toJSON()));
+    mongoose.connection.close()
   })
 
 });
@@ -41,21 +42,20 @@ app.get("/api/persons", (req, res) => {
 app.get("/info", (req, res) => {
   const date = new Date();
   Person.find({}).then(response => {
-    return (res
-      .status(200)
-      .send(`Phonebook has info for ${response.length} people<br/><br/>${date}`))
+    res.status(200).send(`Phonebook has info for ${response.length} people<br/><br/>${date}`)
+    mongoose.connection.close()
   })
-
 });
 
 app.get("/api/persons/:id", (req, res, next) => {
   Person.findById(req.params.id)
     .then(person => {
       if (person) {
-        return res.json(person.toJSON())
+        res.json(person.toJSON())
       } else {
-        return res.status(404).end()
+        res.status(404).end()
       }
+      mongoose.connection.close();
     })
     .catch(error => next(error))
 });
@@ -68,7 +68,8 @@ app.put("/api/persons/:id", (req, res, next) => {
   }
   Person.findByIdAndUpdate(req.params.id, person, { new: true })
     .then(updatedPerson => {
-      return response.json(updatedPerson.toJSON())
+      response.json(updatedPerson.toJSON())
+      mongoose.connection.close();
     })
     .catch(error => next(error))
 });
@@ -76,7 +77,8 @@ app.put("/api/persons/:id", (req, res, next) => {
 app.delete("/api/persons/:id", (req, res) => {
   Note.findByIdAndRemove(request.params.id)
     .then(result => {
-      return response.status(204).end()
+      response.status(204).end()
+      mongoose.connection.close();
     })
     .catch(error => next(error))
 });
@@ -88,7 +90,7 @@ app.post("/api/persons", (req, res) => {
   Person.find({}).then(response => {
     response.forEach(p => {
       if (p.name === req.body.name) {
-        return res.status(400).json({ error: "Name must be unique" });
+        res.status(400).json({ error: "Name must be unique" });
       }
     })
     mongoose.connection.close();
