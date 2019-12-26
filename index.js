@@ -33,6 +33,7 @@ app.use(errorHandler)
 
 app.get("/api/persons", (req, res) => {
   Person.find({}).then(response => {
+    console.log("get res", response)
     res.json(response.map(p => p.toJSON()));
   })
 
@@ -46,10 +47,11 @@ app.get("/info", (req, res) => {
 });
 
 app.get("/api/persons/:id", (req, res, next) => {
-  Person.findOne({ name: request.params.id })
+  Person.findOne({ name: req.params.id })
     .then(person => {
+      console.log("Find p", person)
       if (person) {
-        res.json(person)
+        res.json(person.toJSON())
       } else {
         res.status(404).end()
       }
@@ -63,15 +65,15 @@ app.put("/api/persons/:id", (req, res, next) => {
     name: req.body.name,
     number: req.body.number,
   }
-  Person.findOneAndUpdate({ name: request.params.id }, person, { new: true })
+  Person.findOneAndUpdate({ name: req.params.id }, person, { new: true })
     .then(updatedPerson => {
-      response.json(updatedPerson)
+      res.json(updatedPerson.toJSON())
     })
     .catch(error => next(error))
 });
 
 app.delete("/api/persons/:id", (req, res) => {
-  Person.findOneAndDelete({ name: request.params.id })
+  Person.findOneAndDelete({ name: req.params.id })
     .then(() => {
       response.status(204).end()
     })
@@ -85,7 +87,8 @@ app.post("/api/persons", (req, res) => {
     number: req.body.number,
   });
   new_p.save().then(response => {
-    res.status(200).json(response);
+    console.log(response)
+    res.status(200).json(response.toJSON());
   })
 });
 
