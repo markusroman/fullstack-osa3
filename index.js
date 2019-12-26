@@ -3,7 +3,6 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const Person = require('./models/person')
-const mongoose = require('mongoose')
 const app = express();
 app.use(express.static("build"));
 app.use(cors());
@@ -33,7 +32,6 @@ app.use(errorHandler)
 
 app.get("/api/persons", (req, res) => {
   Person.find({}).then(response => {
-    console.log("get res", response)
     res.json(response.map(p => p.toJSON()));
   })
 
@@ -46,7 +44,8 @@ app.get("/info", (req, res) => {
   })
 });
 
-app.get("/api/persons/:id", (req, res, next) => {
+app.get("/api/persons/:_id", (req, res, next) => {
+  console.log(req)
   Person.findOne({ name: req.params.id })
     .then(person => {
       console.log("Find p", person)
@@ -87,7 +86,6 @@ app.post("/api/persons", (req, res) => {
     number: req.body.number,
   });
   new_p.save().then(response => {
-    console.log(response)
     res.status(200).json(response.toJSON());
   })
 });
