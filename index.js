@@ -21,8 +21,7 @@ app.use(
 
 app.get("/api/persons", (req, res) => {
   Person.find({}).then(response => {
-    res.status(200).json(response.map(p => p.toJSON()));
-    mongoose.connection.close();
+    return res.status(200).json(response.map(p => p.toJSON()));
   })
 
 });
@@ -30,10 +29,9 @@ app.get("/api/persons", (req, res) => {
 app.get("/info", (req, res) => {
   const date = new Date();
   Person.find({}).then(response => {
-    res
+    return (res
       .status(200)
-      .send(`Phonebook has info for ${response.length} people<br/><br/>${date}`);
-    mongoose.connection.close();
+      .send(`Phonebook has info for ${response.length} people<br/><br/>${date}`))
   })
 
 });
@@ -42,11 +40,10 @@ app.get("/api/persons/:id", (req, res, next) => {
   Person.findById(req.params.id)
     .then(person => {
       if (person) {
-        res.json(person.toJSON())
+        return res.json(person.toJSON())
       } else {
-        res.status(404).end()
+        return res.status(404).end()
       }
-      mongoose.connection.close();
     })
     .catch(error => next(error))
 });
@@ -59,8 +56,7 @@ app.put("/api/persons/:id", (req, res, next) => {
   }
   Person.findByIdAndUpdate(req.params.id, person, { new: true })
     .then(updatedPerson => {
-      response.json(updatedPerson.toJSON())
-      mongoose.connection.close();
+      return response.json(updatedPerson.toJSON())
     })
     .catch(error => next(error))
 });
@@ -68,8 +64,7 @@ app.put("/api/persons/:id", (req, res, next) => {
 app.delete("/api/persons/:id", (req, res) => {
   Note.findByIdAndRemove(request.params.id)
     .then(result => {
-      response.status(204).end()
-      mongoose.connection.close();
+      return response.status(204).end()
     })
     .catch(error => next(error))
 });
@@ -92,9 +87,8 @@ app.post("/api/persons", (req, res) => {
     number: req.body.number,
   });
   new_p.save().then(response => {
-    mongoose.connection.close();
+    return res.status(200).json(response[0].toJSON());
   })
-  return res.status(200).json(response[0].toJSON());
 });
 
 const PORT = process.env.PORT
