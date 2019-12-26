@@ -46,6 +46,7 @@ app.get("/api/persons/:id", (req, res, next) => {
       } else {
         res.status(404).end()
       }
+      mongoose.connection.close();
     })
     .catch(error => next(error))
 });
@@ -59,6 +60,7 @@ app.put("/api/persons/:id", (req, res, next) => {
   Person.findByIdAndUpdate(req.params.id, person, { new: true })
     .then(updatedPerson => {
       response.json(updatedPerson.toJSON())
+      mongoose.connection.close();
     })
     .catch(error => next(error))
 });
@@ -67,6 +69,7 @@ app.delete("/api/persons/:id", (req, res) => {
   Note.findByIdAndRemove(request.params.id)
     .then(result => {
       response.status(204).end()
+      mongoose.connection.close();
     })
     .catch(error => next(error))
 });
@@ -81,6 +84,7 @@ app.post("/api/persons", (req, res) => {
         return res.status(400).json({ error: "Name must be unique" });
       }
     })
+    mongoose.connection.close();
   })
 
   const new_p = new Person({
