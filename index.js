@@ -44,15 +44,15 @@ app.get("/info", (req, res) => {
   })
 });
 
-app.get("/api/persons/:_id", (req, res, next) => {
+app.get("/api/persons/:id", (req, res, next) => {
   console.log(req)
-  Person.findOne({ name: req.params.id })
+  Person.findById(req.params.id)
     .then(person => {
       console.log("Find p", person)
       if (person) {
-        res.json(person.toJSON())
+        return res.json(person.toJSON())
       } else {
-        res.status(404).end()
+        return res.status(404).end()
       }
     })
     .catch(error => next(error))
