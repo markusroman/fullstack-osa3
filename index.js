@@ -21,7 +21,7 @@ app.use(
 
 app.get("/api/persons", (req, res) => {
   Person.find({}).then(response => {
-    return res.status(200).json(response.map(p => p.toJSON()));
+    return res.json(response.map(p => p.toJSON()));
   })
 
 });
@@ -83,7 +83,7 @@ app.post("/api/persons", (req, res) => {
   })
 
   const new_p = new Person({
-    name: name,
+    name: req.body.name,
     number: req.body.number,
   });
   new_p.save().then(response => {
