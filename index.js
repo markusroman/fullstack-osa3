@@ -34,7 +34,6 @@ app.use(errorHandler)
 app.get("/api/persons", (req, res) => {
   Person.find({}).then(response => {
     res.json(response.map(p => p.toJSON()));
-    mongoose.connection.close()
   })
 
 });
@@ -43,7 +42,6 @@ app.get("/info", (req, res) => {
   const date = new Date();
   Person.find({}).then(response => {
     res.status(200).send(`Phonebook has info for ${response.length} people<br/><br/>${date}`)
-    mongoose.connection.close()
   })
 });
 
@@ -55,7 +53,6 @@ app.get("/api/persons/:id", (req, res, next) => {
       } else {
         res.status(404).end()
       }
-      mongoose.connection.close();
     })
     .catch(error => next(error))
 });
@@ -69,7 +66,6 @@ app.put("/api/persons/:id", (req, res, next) => {
   Person.findByIdAndUpdate(req.params.id, person, { new: true })
     .then(updatedPerson => {
       response.json(updatedPerson.toJSON())
-      mongoose.connection.close();
     })
     .catch(error => next(error))
 });
@@ -78,7 +74,6 @@ app.delete("/api/persons/:id", (req, res) => {
   Note.findByIdAndRemove(request.params.id)
     .then(result => {
       response.status(204).end()
-      mongoose.connection.close();
     })
     .catch(error => next(error))
 });
@@ -90,10 +85,9 @@ app.post("/api/persons", (req, res) => {
   Person.find({}).then(response => {
     response.forEach(p => {
       if (p.name === req.body.name) {
-        res.status(400).json({ error: "Name must be unique" });
+        return res.status(400).json({ error: "Name must be unique" });
       }
     })
-    mongoose.connection.close();
   })
 
   const new_p = new Person({
@@ -101,7 +95,7 @@ app.post("/api/persons", (req, res) => {
     number: req.body.number,
   });
   new_p.save().then(response => {
-    return res.status(200).json(response[0].toJSON());
+    res.status(200).json(response[0].toJSON());
   })
 });
 
