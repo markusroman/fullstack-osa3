@@ -46,10 +46,10 @@ app.get("/info", (req, res) => {
 });
 
 app.get("/api/persons/:id", (req, res, next) => {
-  Person.findById(req.params.id)
+  Person.findOne({ name: request.params.id })
     .then(person => {
       if (person) {
-        res.json(person.toJSON())
+        res.json(person)
       } else {
         res.status(404).end()
       }
@@ -63,39 +63,29 @@ app.put("/api/persons/:id", (req, res, next) => {
     name: req.body.name,
     number: req.body.number,
   }
-  Person.findByIdAndUpdate(req.params.id, person, { new: true })
+  Person.findOneAndUpdate({ name: request.params.id }, person, { new: true })
     .then(updatedPerson => {
-      response.json(updatedPerson.toJSON())
+      response.json(updatedPerson)
     })
     .catch(error => next(error))
 });
 
 app.delete("/api/persons/:id", (req, res) => {
-  Note.findByIdAndRemove(request.params.id)
-    .then(result => {
+  Person.findOneAndDelete({ name: request.params.id })
+    .then(() => {
       response.status(204).end()
     })
     .catch(error => next(error))
 });
 
 app.post("/api/persons", (req, res) => {
-  if (!req.body.number || !req.body.name) {
-    return res.status(400).json({ error: "Invalid name or/and number" });
-  }
-  Person.find({}).then(response => {
-    response.forEach(p => {
-      if (p.name === req.body.name) {
-        return res.status(400).json({ error: "Name must be unique" });
-      }
-    })
-  })
 
   const new_p = new Person({
     name: req.body.name,
     number: req.body.number,
   });
   new_p.save().then(response => {
-    res.status(200).json(response[0].toJSON());
+    res.status(200).json(response);
   })
 });
 
