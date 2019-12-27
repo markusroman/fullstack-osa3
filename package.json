@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "watch": "nodemon index.js",
-    "deploy": "git add . && git commit -m 'uibuild' && git push osa3 master",
+    "deploy": "eslint . && git add . && git commit -m 'uibuild' && git push osa3 master",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Markus Röman",
@@ -16,9 +16,11 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "mongoose": "^5.8.3",
+    "mongoose-unique-validator": "^2.0.3",
     "morgan": "^1.9.1"
   },
   "devDependencies": {
+    "eslint": "^6.8.0",
     "nodemon": "^2.0.2"
   }
 }
