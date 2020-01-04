@@ -1,1 +1,1 @@
-Linkki sovellukseen http://markus-fs-osakolme.herokuapp.com/api/persons
+Linkki sovellukseen http://markus-fs-osakolme.herokuapp.com
